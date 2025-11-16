@@ -45,16 +45,19 @@ echo -e "arm_freq=600" >> $CONFIG_FILE
 mkdir -p $INSTALLATION_PATH/NaturewatchCameraServer >/dev/null 2>&1
 cp -r $DIR $INSTALLATION_PATH >/dev/null 2>&1
 
+# Set non-interactive mode for apt to avoid configuration prompts
+export DEBIAN_FRONTEND=noninteractive
+
 # Update and upgrade
 apt-get clean
 apt-get update
-apt-get upgrade -y
-apt-get dist-upgrade -y
+apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
+apt-get dist-upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 
 # Install extra packages (with specific versions) to avoid breaking the system:
 # apt list python3-picamera2 git python3-pip python3-libcamera libcap-dev ffmpeg python3-flask python3-numpy python3-opencv python3-kms++ --installed
-apt-get install -y python3-picamera2 --no-install-recommends
-apt-get install -y git python3-pip python3-libcamera libcap-dev ffmpeg python3-flask python3-numpy python3-opencv python3-kms++
+apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" python3-picamera2 --no-install-recommends
+apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" git python3-pip python3-libcamera libcap-dev ffmpeg python3-flask python3-numpy python3-opencv python3-kms++
 
 # Setup a venv
 python -m venv --system-site-packages ${INSTALLATION_PATH}/NaturewatchCameraServer/.venv
